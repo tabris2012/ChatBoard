@@ -36,6 +36,10 @@ function loadHistory(div_id) {
 function saveHistory(div_id, to_div_id) {
   const display = document.getElementById(div_id);
   const text = display.innerHTML;
+
+  if (text.length < 1) { //保存するものが何もないときは抜ける
+    return;
+  } 
   
   $.ajax({
     async: true,
