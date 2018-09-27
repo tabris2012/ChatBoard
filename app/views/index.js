@@ -14,6 +14,10 @@ function sendText(input_name, display_id) {
   //target.value += text+"\n"; //innerTextには追記できない
 }
 
+function scrollDown(div_id) {
+  $('#'+div_id).scrollTop($('#'+div_id)[0].scrollHeight);
+}
+
 function loadHistory(div_id) {
   const target = document.getElementById(div_id);
   
@@ -25,6 +29,7 @@ function loadHistory(div_id) {
   })
   .done(data => {
     target.innerHTML = data;
+    scrollDown(div_id);
   })
 }
 
@@ -44,12 +49,11 @@ function saveHistory(div_id, to_div_id) {
   .done(data => {
     const to_div = document.getElementById(to_div_id);
 
-    for (var child of display.children) { //inはインデックス、ofは要素
-      to_div.appendChild(child); //子要素を移動
-      to_div.appendChild(document.createElement('br'));
+    while (display.childNodes.length) { //子要素を移動
+      to_div.appendChild(display.firstChild);
     }
 
-    clearDiv(div_id);
+    scrollDown(to_div_id);
   })
 }
 
