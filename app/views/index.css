@@ -1,8 +1,25 @@
-#display {
-  border: 1px solid #999;
+div.input input[type="text"] {
   width: 70%;
-  height: 150px;
+}
+div#history {
+  border: 1px solid #999;
+  width: 90%;
+  height: 300px;
   overflow: auto;
   resize: both;
   background-color: #FAFAFA;
+}
+div#display {
+  border: 1px solid #999;
+  width: 90%;
+  height: 300px;
+  overflow: auto;
+  resize: both;
+  background-color: #FAFAFA;
+}
+span.text_user1 {
+  color: #000000;
+}
+span.text_user2 {
+  color: #8965a1;
 }

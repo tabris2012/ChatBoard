@@ -1,10 +1,10 @@
-function sendText(input_name, display_id, color) {
+function sendText(input_name, display_id) {
   const obj_text = document.getElementsByName(input_name)[0];
   const target = document.getElementById(display_id);
 
   var new_span = document.createElement('span');
+  new_span.className = input_name;
   new_span.innerHTML = obj_text.value;
-  new_span.style.color = color;
 
   target.appendChild(new_span);
   target.appendChild(document.createElement('br'));
@@ -14,10 +14,23 @@ function sendText(input_name, display_id, color) {
   //target.value += text+"\n"; //innerTextには追記できない
 }
 
+function loadHistory(div_id) {
+  const target = document.getElementById(div_id);
+  
+  $.ajax({
+    async: true,
+    type: "POST",
+    url: "./api/history/load",
+    dataType: "text"
+  })
+  .done(data => {
+    target.innerHTML = data;
+  })
+}
 
-function saveHistory(display_id) {
-  const display = document.getElementById(display_id);
-  const text = display.innerText;
+function saveHistory(div_id, to_div_id) {
+  const display = document.getElementById(div_id);
+  const text = display.innerHTML;
   
   $.ajax({
     async: true,
@@ -29,7 +42,14 @@ function saveHistory(display_id) {
     dataType: "text"
   })
   .done(data => {
+    const to_div = document.getElementById(to_div_id);
 
+    for (var child of display.children) { //inはインデックス、ofは要素
+      to_div.appendChild(child); //子要素を移動
+      to_div.appendChild(document.createElement('br'));
+    }
+
+    clearDiv(div_id);
   })
 }
 
