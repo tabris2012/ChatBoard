@@ -1,21 +1,25 @@
+body {
+  background-color: #E0E0E0
+}
 div.input input[type="text"] {
   width: 70%;
+  background-color: #F0F0F0
 }
 div#history {
   border: 1px solid #999;
   width: 90%;
-  height: 300px;
+  height: 350px;
   overflow: auto;
   resize: both;
-  background-color: #FAFAFA;
+  background-color: #F0F0F0;
 }
 div#display {
   border: 1px solid #999;
   width: 90%;
-  height: 300px;
+  height: 250px;
   overflow: auto;
   resize: both;
-  background-color: #FAFAFA;
+  background-color: #F0F0F0;
 }
 span.text_user1 {
   color: #000000;
