@@ -8,23 +8,27 @@
   <script src="index.js"></script>
 </head>
 <body>
-  <div id="user1">
-    <form onsubmit="sendText('text_user1','display', '#000000');return false;">
-      <span>User1: </span>
-      <input type="text" name="text_user1" value="">
-      <input type="button" value="Send" onclick="sendText('text_user1','display', '#000000')">
-    </form>
+  <div id="history">
   </div>
-  <div id="user2">
-    <form onsubmit="sendText('text_user2','display', '#8965a1');return false;">
-      <span style="color: #8965a1;">User2: </span>
-      <input type="text" name="text_user2" value="">
-      <input type="button" value="Send" onclick="sendText('text_user2','display', '#8965a1')">
-    </form>
-  </div>
+  <input type="button" value="Save" accesskey="s" onclick="saveHistory('display','history')">
+  <span>(Alt+S)</span>
+  <input type="button" value="Load" onclick="loadHistory('history')">
+  <input type="button" value="Clear" onclick="clearDiv('display')">
   <div id="display">
   </div>
-  <input type="button" value="Save" onclick="saveHistory('display')">
-  <input type="button" value="Clear" onclick="clearDiv('display')">
+  <div class="input">
+    <form onsubmit="sendText('text_user1','display');return false;">
+      <span class='text_user1'>User1: </span>
+      <input type="text" name="text_user1" value="">
+      <!--<input type="button" value="Send" onclick="sendText('text_user1','display')"> -->
+    </form>
+  </div>
+  <div class="input">
+    <form onsubmit="sendText('text_user2','display');return false;">
+      <span class='text_user2'>User2: </span>
+      <input type="text" name="text_user2" value="">
+      <!-- <input type="button" value="Send" onclick="sendText('text_user2','display')"> -->
+    </form>
+  </div>
 </body>
 </html>
