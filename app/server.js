@@ -36,7 +36,7 @@ app.use(function(err, req, res, next) {
 });
 
 // Start server
-var port = '80';
+var port = '3000';
 
 app.listen(port, '0.0.0.0', () => {
   console.log("App server starting");
