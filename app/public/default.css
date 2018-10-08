@@ -1,7 +1,7 @@
 body {
   background-color: #E0E0E0
 }
-div.input input[type="text"] {
+div.input input {
   width: 70%;
   background-color: #F0F0F0
 }
