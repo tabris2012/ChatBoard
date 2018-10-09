@@ -5,7 +5,8 @@ import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import Button from '@material-ui/core/Button';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
-import { mailFolderListItems, otherMailFolderListItems } from './side-menu';
+import { folderListItems } from './side-menu';
+import MuiTreeView from 'material-ui-treeview';
 import MenuIcon from '@material-ui/icons/Menu';
  
  
@@ -33,19 +34,7 @@ class SwipeableTemporaryDrawer extends React.Component {
     const { classes } = this.props;
  
     const sideList = (
-      <div className={classes.list}>
-        <List>{mailFolderListItems}</List>
-        <Divider />
-        <List>{otherMailFolderListItems}</List>
-      </div>
-    );
- 
-    const fullList = (
-      <div className={classes.fullList}>
-        <List>{mailFolderListItems}</List>
-        <Divider />
-        <List>{otherMailFolderListItems}</List>
-      </div>
+      <MuiTreeView tree={folderListItems} />
     );
  
     return (
@@ -59,8 +48,8 @@ class SwipeableTemporaryDrawer extends React.Component {
           <div
             tabIndex={0}
             role="button"
-            onClick={this.toggleDrawer('left', false)}
-            onKeyDown={this.toggleDrawer('left', false)}
+            /*onClick={this.toggleDrawer('left', false)}
+            onKeyDown={this.toggleDrawer('left', false)}*/
           >
             {sideList}
           </div>
