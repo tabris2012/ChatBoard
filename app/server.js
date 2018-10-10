@@ -15,8 +15,10 @@ app.use(cookieParser());
 app.use(express.static(__dirname + '/build'));
 
 // Server side
-var fileRouter = require('./routes/history');
-app.use('/api/history', fileRouter);
+var historyRouter = require('./routes/history');
+app.use('/api/history', historyRouter);
+var fileRouter = require('./routes/folder');
+app.use('/api/folder', fileRouter);
 /*
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

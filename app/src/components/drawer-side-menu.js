@@ -2,14 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
-import Button from '@material-ui/core/Button';
-import List from '@material-ui/core/List';
-import Divider from '@material-ui/core/Divider';
-import { folderListItems } from './side-menu';
+//import { folderListItems } from './side-menu';
 import MuiTreeView from 'material-ui-treeview';
 import MenuIcon from '@material-ui/icons/Menu';
- 
- 
+import Request from 'request';
+
 const styles = {
   list: {
     width: 250,
@@ -22,20 +19,34 @@ const styles = {
 class SwipeableTemporaryDrawer extends React.Component {
   state = {
     left: false,
+    folderList: [],
   };
  
   toggleDrawer = (side, open) => () => {
     this.setState({
       [side]: open,
     });
+
+    if (open) { //サイドメニューを開くときにフォルダ取得
+      Request.get('http://localhost/api/folder', function (err, res, body){
+        var data = JSON.parse(body);
+        
+        if (err) {
+          console.log('Request error: '+ err.message);
+          return;
+        }
+
+        console.log(data);
+
+        this.setState({
+          'folderList': data,
+        });
+      }.bind(this)); 
+    }
   };
  
   render() {
     const { classes } = this.props;
- 
-    const sideList = (
-      <MuiTreeView tree={folderListItems} />
-    );
  
     return (
       <div>
@@ -51,7 +62,9 @@ class SwipeableTemporaryDrawer extends React.Component {
             /*onClick={this.toggleDrawer('left', false)}
             onKeyDown={this.toggleDrawer('left', false)}*/
           >
-            {sideList}
+            <div className={classes.list}>
+              <MuiTreeView tree={this.state.folderList} />
+            </div>
           </div>
         </SwipeableDrawer>
       </div>
