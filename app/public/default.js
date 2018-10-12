@@ -1,4 +1,4 @@
-var current_filepath = "test_history";
+var current_filepath = "new_history";
 
 function sendText(input_name, display_id) {
   const obj_text = document.getElementsByName(input_name)[0];

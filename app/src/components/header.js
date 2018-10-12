@@ -23,7 +23,7 @@ const styles = {
  
 class ButtonAppBar extends React.Component {
   state = {
-    'title': 'Select file',
+    'title': window.current_filepath,
   }
 
   updateState = (state) => {
