@@ -8,7 +8,7 @@ div.input input {
 div#history {
   border: 1px solid #999;
   width: 100%;
-  height: 350px;
+  height: 300px;
   overflow: auto;
   resize: both;
   background-color: #F0F0F0;
@@ -16,7 +16,7 @@ div#history {
 div#display {
   border: 1px solid #999;
   width: 100%;
-  height: 250px;
+  height: 200px;
   overflow: auto;
   resize: both;
   background-color: #F0F0F0;

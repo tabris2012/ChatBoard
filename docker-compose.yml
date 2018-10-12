@@ -2,7 +2,7 @@ version: '3'
 services:
   webserver:
     build: . # Dockerfileがあるディレクトリ
-    container_name: node
+    container_name: nodeChat
     tty: true
     privileged: true # root権限
     volumes:

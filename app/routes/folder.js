@@ -13,9 +13,8 @@ function createDirStr(root_dir, only_dir) {
 
   function depthAddDir(file_dir, parent_str) {
     const data = {};
-    console.log(file_dir);
-    console.log(parent_str);
     data['value'] = file_dir;
+    data['path'] = parent_str+file_dir;
 
     if (fs.statSync(root_dir+parent_str+file_dir).isDirectory()) {
       const node_array = [];

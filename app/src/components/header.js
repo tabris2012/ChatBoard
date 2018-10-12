@@ -6,7 +6,6 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
-
 import DrawerSideMenu from './drawer-side-menu';
  
 const styles = {
@@ -22,23 +21,34 @@ const styles = {
   },
 };
  
-function ButtonAppBar(props) {
-  const { classes } = props;
-  return (
-    <div className={classes.root}>
-      <AppBar position="static">
-        <Toolbar>
-          <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
-            <DrawerSideMenu />
-          </IconButton>
-          <Typography variant="title" color="inherit" className={classes.flex}>
-            Title
-          </Typography>
-          <Button color="inherit">Login</Button>
-        </Toolbar>
-      </AppBar>
-    </div>
-  );
+class ButtonAppBar extends React.Component {
+  state = {
+    'title': 'Select file',
+  }
+
+  updateState = (state) => {
+    this.setState(state);
+  }
+
+  render () {
+    const { classes } = this.props;
+
+    return (
+      <div className={classes.root}>
+        <AppBar position="static">
+          <Toolbar>
+            <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
+              <DrawerSideMenu updateState={this.updateState}/>
+            </IconButton>
+            <Typography variant="title" color="inherit" className={classes.flex}>
+              {this.state.title}
+            </Typography>
+            <Button color="inherit">Login</Button>
+          </Toolbar>
+        </AppBar>
+      </div>
+    );
+  }
 }
  
 ButtonAppBar.propTypes = {
