@@ -1,3 +1,5 @@
+var current_filepath = "new_history";
+
 function sendText(input_name, display_id) {
   const obj_text = document.getElementsByName(input_name)[0];
   const target = document.getElementById(display_id);
@@ -18,13 +20,17 @@ function scrollDown(div_id) {
   $('#'+div_id).scrollTop($('#'+div_id)[0].scrollHeight);
 }
 
-function loadHistory(div_id) {
+function loadHistory(div_id, filepath) {
   const target = document.getElementById(div_id);
+  current_filepath = filepath;
   
   $.ajax({
     async: true,
     type: "POST",
     url: "./api/history/load",
+    data: {
+      path: filepath,
+    },
     dataType: "text"
   })
   .done(data => {
@@ -47,6 +53,7 @@ function saveHistory(div_id, to_div_id) {
     url: "./api/history",
     data: {
       data: text,
+      path: current_filepath,
     },
     dataType: "text"
   })

@@ -1,5 +1,4 @@
 var express = require('express');
-var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 //const static = require('node-static');
@@ -13,11 +12,13 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 // view as static html
-app.use(express.static(__dirname + '/views'));
+app.use(express.static(__dirname + '/build'));
 
 // Server side
-var fileRouter = require('./routes/history');
-app.use('/api/history', fileRouter);
+var historyRouter = require('./routes/history');
+app.use('/api/history', historyRouter);
+var fileRouter = require('./routes/folder');
+app.use('/api/folder', fileRouter);
 /*
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
