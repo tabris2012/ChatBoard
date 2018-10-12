@@ -37,7 +37,7 @@ function createDirStr(root_dir, only_dir) {
 }
 
 /* GET filepath */
-router.get('/', function(req, res, next) {
+router.post('/', function(req, res, next) {
   var res_array = createDirStr(data_path);
   res.status(200).json(res_array);
 });

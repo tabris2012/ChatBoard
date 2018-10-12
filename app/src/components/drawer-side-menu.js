@@ -27,7 +27,7 @@ class SwipeableTemporaryDrawer extends React.Component {
     });
 
     if (open) { //サイドメニューを開くときにフォルダ取得
-      Request.get('http://localhost/api/folder', (err, res, body) => {
+      Request.post('http://localhost/api/folder', (err, res, body) => {
         var data = JSON.parse(body);
         
         if (err) {
