@@ -3,7 +3,8 @@ body {
 }
 div.input input {
   width: 70%;
-  background-color: #F0F0F0
+  background-color: #F0F0F0;
+  font-size: 110%;
 }
 div#history {
   border: 1px solid #999;
@@ -12,6 +13,7 @@ div#history {
   overflow: auto;
   resize: both;
   background-color: #F0F0F0;
+  font-size: 110%;
 }
 div#display {
   border: 1px solid #999;
@@ -20,6 +22,7 @@ div#display {
   overflow: auto;
   resize: both;
   background-color: #F0F0F0;
+  font-size: 110%;
 }
 span.text_user1 {
   color: #000000;

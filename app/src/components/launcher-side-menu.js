@@ -9,13 +9,11 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import AddIcon from '@material-ui/icons/AddCircle';
 import DeleteIcon from '@material-ui/icons/DeleteForever';
-import RenameIcon from '@material-ui/icons/Spellcheck';
-import MenuIcon from '@material-ui/icons/Menu';
+import FavIcon from '@material-ui/icons/Grade';
 import MuiTreeView from 'material-ui-treeview';
 import Request from 'request';
 import NewFileDialog from './newFile-dialog';
 import DeleteFileDialog from './deleteFile-dialog';
-import RenameFileDialog from './renameFile-dialog';
 
 const styles = {
   list: {
@@ -32,11 +30,10 @@ class SwipeableTemporaryDrawer extends React.Component {
     this.default_filename = this.props.filename;
 
     this.state = {
-      left: false,
+      right: false,
       folderList: [],
       newFile: false,
       deleteFile: false,
-      renameFile: false,
     };
   }
  
@@ -94,26 +91,6 @@ class SwipeableTemporaryDrawer extends React.Component {
     }); 
   }
 
-  renameHistory = (toPath) => {
-    Request.post({
-      url: 'http://localhost/api/history/rename',
-      json: {
-        fromPath: this.props.filename,
-        toPath: toPath,
-      },
-    }, (err, res, body) => {
-      var data = body;
-      
-      if (err) {
-        console.log('Request error: '+ err.message);
-        return;
-      }
-
-      console.log(data);
-      this.loadHistory(toPath,null);
-    }); 
-  }
-
   toggleDialog = (target) => (open) => () => {
     this.setState({
       [target]: open,
@@ -128,7 +105,7 @@ class SwipeableTemporaryDrawer extends React.Component {
         <List>
           <ListItem button
             onClick={() => {
-              this.toggleDrawer('left', false)();
+              this.toggleDrawer('right', false)();
               this.toggleDialog('newFile')(true)()}}
           >
             <ListItemIcon>
@@ -138,7 +115,7 @@ class SwipeableTemporaryDrawer extends React.Component {
           </ListItem>
           <ListItem button
             onClick={() => {
-              this.toggleDrawer('left', false)();
+              this.toggleDrawer('right', false)();
               this.toggleDialog('deleteFile')(true)()}}
           >
             <ListItemIcon>
@@ -146,22 +123,12 @@ class SwipeableTemporaryDrawer extends React.Component {
             </ListItemIcon>
             <ListItemText primary="Delete" />
           </ListItem>
-          <ListItem button
-            onClick={() => {
-              this.toggleDrawer('left', false)();
-              this.toggleDialog('renameFile')(true)()}}
-          >
-            <ListItemIcon>
-              <RenameIcon />
-            </ListItemIcon>
-            <ListItemText primary="Rename" />
-          </ListItem>
         </List>
         <Divider />
         <MuiTreeView
           tree={this.state.folderList}
           onLeafClick={(node, parent) => {
-            this.toggleDrawer('left', false)();
+            this.toggleDrawer('right', false)();
             this.loadHistory(node, parent);}}
         />
       </div>
@@ -169,17 +136,17 @@ class SwipeableTemporaryDrawer extends React.Component {
  
     return (
       <div>
-        <MenuIcon onClick={this.toggleDrawer('left', true)} />
+        <FavIcon onClick={this.toggleDrawer('right', true)} />
         <SwipeableDrawer
-          open={this.state.left}
-          onClose={this.toggleDrawer('left', false)}
-          onOpen={this.toggleDrawer('left', true)}
+          open={this.state.right}
+          onClose={this.toggleDrawer('right', false)}
+          onOpen={this.toggleDrawer('right', true)}
         >
           <div
             tabIndex={0}
             role="button"
             /*onClick="loadHistory('history', 'test_history')"
-            onKeyDown={this.toggleDrawer('left', false)}*/
+            onKeyDown={this.toggleDrawer('right', false)}*/
           >
             {sideList}
           </div>
@@ -193,12 +160,6 @@ class SwipeableTemporaryDrawer extends React.Component {
           open={this.state.deleteFile}
           toggleDialog={this.toggleDialog('deleteFile')}
           deleteFile={this.deleteHistory}
-        />
-        <RenameFileDialog 
-          open={this.state.renameFile}
-          toggleDialog={this.toggleDialog('renameFile')}
-          filepath={this.props.filename}
-          renamePath={this.renameHistory}
         />
       </div>
     );
