@@ -22,7 +22,7 @@ const styles = {
   },
 };
 
-const default_filename = '# default';
+const default_filename = 'default';
  
 class ButtonAppBar extends React.Component {
   constructor(props) {
@@ -49,7 +49,7 @@ class ButtonAppBar extends React.Component {
               <DrawerSideMenu filename={this.state.title} updateState={this.updateState}/>
             </IconButton>
             <Typography variant="title" color="inherit" className={classes.flex}>
-              {this.state.title}
+              {'# '+this.state.title}
             </Typography>
             <IconButton color="inherit">
               <LaunchSideMenu />

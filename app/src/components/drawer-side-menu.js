@@ -39,6 +39,23 @@ class SwipeableTemporaryDrawer extends React.Component {
       renameFile: false,
     };
   }
+
+  addHeader = (json_array) => {
+    function depthAddHeader(json_elem) {
+      if (json_elem['nodes']) {
+        json_elem['nodes'].forEach((child_elem) => {
+          depthAddHeader(child_elem);
+        })
+      }
+      else {
+        json_elem['value'] = '# '+json_elem['value'];
+      }
+    }
+
+    json_array.forEach((json_elem) => {
+      depthAddHeader(json_elem)
+    })
+  }
  
   toggleDrawer = (side, open) => () => { //カリー化：関数オブジェクトを返す
     if (!open) {
@@ -48,6 +65,7 @@ class SwipeableTemporaryDrawer extends React.Component {
     } else {//サイドメニューを開くときにフォルダ取得
       Request.post('http://localhost/api/folder', (err, res, body) => {
         var data = JSON.parse(body);
+        this.addHeader(data);
         
         if (err) {
           console.log('Request error: '+ err.message);
@@ -162,7 +180,7 @@ class SwipeableTemporaryDrawer extends React.Component {
           tree={this.state.folderList}
           onLeafClick={(node, parent) => {
             this.toggleDrawer('left', false)();
-            this.loadHistory(node, parent);}}
+            this.loadHistory(node.replace(/^# /g,''), parent);}} //表示上の#を消す
         />
       </div>
     );

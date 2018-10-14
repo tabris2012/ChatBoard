@@ -18,7 +18,7 @@ export default class NewFileDialog extends React.Component {
   onClickSave = () => {
     const dirname = path.dirname(this.inputText);
     const basename = path.basename(this.inputText);
-    this.props.makeFile('# '+basename,dirname);
+    this.props.makeFile(basename,dirname);
   };
  
   render() {
