@@ -10,3 +10,4 @@ services:
       - ../../../Data/:/data
     ports:
       - "3000:3000"
+    command: /bin/sh -c "cd /app && npm install && npm start"
