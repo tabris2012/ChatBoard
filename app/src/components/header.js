@@ -7,6 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import DrawerSideMenu from './drawer-side-menu';
+import LaunchSideMenu from './launcher-side-menu';
  
 const styles = {
   root: {
@@ -20,10 +21,17 @@ const styles = {
     marginRight: 20,
   },
 };
+
+const default_filename = 'default';
  
 class ButtonAppBar extends React.Component {
-  state = {
-    'title': window.current_filepath,
+  constructor(props) {
+    super(props);
+    window.loadHistory("history", default_filename);
+    
+    this.state = {
+      title: default_filename,
+    }
   }
 
   updateState = (state) => {
@@ -38,12 +46,14 @@ class ButtonAppBar extends React.Component {
         <AppBar position="static">
           <Toolbar>
             <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
-              <DrawerSideMenu updateState={this.updateState}/>
+              <DrawerSideMenu filename={this.state.title} updateState={this.updateState}/>
             </IconButton>
             <Typography variant="title" color="inherit" className={classes.flex}>
-              {this.state.title}
+              {'# '+this.state.title}
             </Typography>
-            <Button color="inherit">Login</Button>
+            <IconButton color="inherit">
+              <LaunchSideMenu />
+            </IconButton>
           </Toolbar>
         </AppBar>
       </div>
