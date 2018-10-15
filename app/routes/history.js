@@ -23,15 +23,31 @@ router.post('/rename', function(req, res, next) {
   res.status(200).send('rename');
 });
 
+var deleteFolderRecursive = function(path) {
+  if (fs.existsSync(path)) {
+    fs.readdirSync(path).forEach(function(file, index){
+      var curPath = path + "/" + file;
+      if (fs.lstatSync(curPath).isDirectory()) { // recurse
+        deleteFolderRecursive(curPath);
+      } else { // delete file
+        fs.unlinkSync(curPath);
+      }
+    });
+    fs.rmdirSync(path);
+  }
+};
+
 /* Delete history. */
 router.post('/delete', function(req, res, next) {
   const filepath = root_path+req.body.path;
-  const dirname = path.dirname(filepath);
   console.log(filepath);
 
   try {
-    fs.statSync(filepath);
-    fs.unlinkSync(filepath);
+    if (fs.statSync(filepath).isDirectory()) {
+      deleteFolderRecursive(filepath);
+    } else {
+      fs.unlinkSync(filepath);
+    }
   } catch (err) {
     if (err.code === 'ENOENT') res.status(200).send('ENOENT');
     return;

@@ -5,15 +5,20 @@ import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/AddCircle';
 import DeleteIcon from '@material-ui/icons/DeleteForever';
 import FavIcon from '@material-ui/icons/Grade';
-import MuiTreeView from 'material-ui-treeview';
+import Collapse from '@material-ui/core/Collapse';
+import ExpandLess from '@material-ui/icons/ExpandLess';
+import ExpandMore from '@material-ui/icons/ExpandMore';
 import Request from 'request';
-import NewFileDialog from './newFile-dialog';
-import DeleteFileDialog from './deleteFile-dialog';
+import TreeMenu from './tree-menu';
+import NewFavDialog from './newFav-dialog';
+import RenameFavDialog from './renameFav-dialog';
 
 const styles = {
   list: {
@@ -31,19 +36,25 @@ class SwipeableTemporaryDrawer extends React.Component {
 
     this.state = {
       right: false,
-      folderList: [],
-      newFile: false,
-      deleteFile: false,
+      favList: [],
+      newFav: false,
+      renameFav: false,
     };
   }
+
+  fromFav = {
+    group: "",
+    value: "",
+    url: "",
+  };
  
   toggleDrawer = (side, open) => () => { //カリー化：関数オブジェクトを返す
     if (!open) {
       this.setState({
         [side]: open,
       });
-    } else {//サイドメニューを開くときにフォルダ取得
-      Request.post('http://localhost/api/folder', (err, res, body) => {
+    } else {//サイドメニューを開くときにお気に入り取得
+      Request.post('http://localhost/api/favorite', (err, res, body) => {
         var data = JSON.parse(body);
         
         if (err) {
@@ -53,42 +64,149 @@ class SwipeableTemporaryDrawer extends React.Component {
 
         this.setState({
           [side]: open,
-          folderList: data,
+          favList: data,
         });
       }); 
     }
   };
 
-  loadHistory = (node, parent) => {
-    var path = node;
-
-    if (parent != null) {
-      path = parent.path+"/"+node;
+  addFavorite = (groupName,valueName,url_path) => {
+    if (groupName == "") { //groupName無しの時は第1層に追加
+      this.state.favList.push({
+        value: valueName,
+        url: url_path,
+      });
     }
-    
-    window.loadHistory("history",path);
-    this.props.updateState({
-      title: path,
-    })
-  };
+    else {
+      var findGroup = false;
+      this.state.favList.some((oneGroup) => {
+        if ((oneGroup.nodes != null) && (oneGroup.value == groupName)) {
+          oneGroup.nodes.push({
+            value: valueName,
+            url: url_path,
+          });
+          findGroup = true;
+          return true;
+        }
+      });
+      if (!findGroup) {//最後まで見つからなかったら新規作成
+        this.state.favList.push({
+          value: groupName,
+          nodes: [{
+            value: valueName,
+            url: url_path,
+          }]
+        });
+      }
+    }
 
-  deleteHistory = () => {
     Request.post({
-      url: 'http://localhost/api/history/delete',
+      url: 'http://localhost/api/favorite/save',
       json: {
-        path: this.props.filename,
+        data: this.state.favList,
       },
     }, (err, res, body) => {
-      var data = body;
       
       if (err) {
         console.log('Request error: '+ err.message);
         return;
       }
-
-      console.log(data);
-      this.loadHistory(this.default_filename,null);
     }); 
+
+    this.setState({
+      favList: this.state.favList, //編集したことを通知
+    });
+  };
+
+  openLink = (node, parent) => {
+    var targetLayer = null
+
+    if (parent == null) { //第1層検索
+      targetLayer = this.state.favList;
+    } else {//第2層検索
+      targetLayer = parent.nodes;
+    }
+
+    targetLayer.forEach((oneGroup) => {
+      if ((oneGroup.nodes == null) && (oneGroup.value == node)) {
+        window.open(oneGroup.url);
+      }
+    });
+  }
+
+  renameFavorite = (toFav) => { //toFavがnullのときは削除
+    if (this.fromFav.group == "") { //groupName無しの時は第1層探索
+      var targetPos = 0;
+
+      this.state.favList.some((oneNode) => {
+        if ((oneNode.nodes == null) && (oneNode.value == this.fromFav.value)) {
+          if (toFav == null) {
+            this.state.favList.splice(targetPos,1);
+          } else { //変数
+            oneNode.value = toFav.value;
+            oneNode.url = toFav.url;
+          }
+          return true;
+        }
+
+        targetPos += 1;
+      });
+    } else if (this.fromFav.value == "") { //valueが無いときgroupを編集
+      var targetPos = 0;
+
+      this.state.favList.some((oneGroup) => {
+        if ((oneGroup.nodes != null) && (oneGroup.value == this.fromFav.group)) {
+          if (toFav == null) {
+            this.state.favList.splice(targetPos,1);
+          } else { //変数
+            oneGroup.value = toFav.group;
+          }
+          return true;
+        }
+
+        targetPos += 1;
+      });
+    } else {
+      this.state.favList.some((oneGroup) => {
+        if ((oneGroup.nodes != null) && (oneGroup.value == this.fromFav.group)) {
+          var targetPos = 0;
+
+          oneGroup.nodes.some((oneNode) => {
+            if ((oneNode.nodes == null) && (oneNode.value == this.fromFav.value)) {
+              if (toFav == null) {
+                oneGroup.nodes.splice(targetPos,1);
+              } else { //変数
+                oneNode.value = toFav.value;
+                oneNode.url = toFav.url;
+              }
+              return true;
+            }
+
+            targetPos += 1;
+          });
+
+          return true;
+        }
+      });
+      //最後まで見つからなかったら何もしない
+    }
+
+    Request.post({
+      url: 'http://localhost/api/favorite/save',
+      json: {
+        data: this.state.favList,
+      },
+    }, (err, res, body) => {
+      
+      if (err) {
+        console.log('Request error: '+ err.message);
+        return;
+      }
+    }); 
+
+    this.setState({
+      favList: this.state.favList, //編集したことを通知
+    });
   }
 
   toggleDialog = (target) => (open) => () => {
@@ -104,33 +222,35 @@ class SwipeableTemporaryDrawer extends React.Component {
       <div className={classes.list}>
         <List>
           <ListItem button
-            onClick={() => {
-              this.toggleDrawer('right', false)();
-              this.toggleDialog('newFile')(true)()}}
+            onClick={this.toggleDialog('newFav')(true)}
           >
             <ListItemIcon>
               <AddIcon />
             </ListItemIcon>
             <ListItemText primary="New" />
           </ListItem>
-          <ListItem button
-            onClick={() => {
-              this.toggleDrawer('right', false)();
-              this.toggleDialog('deleteFile')(true)()}}
-          >
-            <ListItemIcon>
-              <DeleteIcon />
-            </ListItemIcon>
-            <ListItemText primary="Delete" />
-          </ListItem>
         </List>
         <Divider />
-        <MuiTreeView
-          tree={this.state.folderList}
-          onLeafClick={(node, parent) => {
-            this.toggleDrawer('right', false)();
-            this.loadHistory(node, parent);}}
+        <List>
+          <TreeMenu
+            menuList={this.state.favList}
+            onLeafClick={(node) => window.open(node.url)}
+            onIconLeafClick={(node, parent) => {
+              this.fromFav = {
+                group: (parent==null ? "" : parent.value),
+                value: node.value,
+                url: node.url,
+              }
+              this.toggleDialog('renameFav')(true)()}}
+            onIconRootClick={(node) => {
+              this.fromFav = {
+                group: node.value,
+                value: "",
+                url: "",
+              }
+              this.toggleDialog('renameFav')(true)()}}
         />
+        </List>
       </div>
     );
  
@@ -139,6 +259,7 @@ class SwipeableTemporaryDrawer extends React.Component {
         <FavIcon onClick={this.toggleDrawer('right', true)} />
         <SwipeableDrawer
           open={this.state.right}
+          anchor="right"
           onClose={this.toggleDrawer('right', false)}
           onOpen={this.toggleDrawer('right', true)}
         >
@@ -151,15 +272,16 @@ class SwipeableTemporaryDrawer extends React.Component {
             {sideList}
           </div>
         </SwipeableDrawer>
-        <NewFileDialog 
-          open={this.state.newFile}
-          toggleDialog={this.toggleDialog('newFile')}
-          makeFile={(filename, parent) =>{this.loadHistory(filename, {path: parent})}}
+        <NewFavDialog 
+          open={this.state.newFav}
+          toggleDialog={this.toggleDialog('newFav')}
+          addFavorite={this.addFavorite}
         />
-        <DeleteFileDialog 
-          open={this.state.deleteFile}
-          toggleDialog={this.toggleDialog('deleteFile')}
-          deleteFile={this.deleteHistory}
+        <RenameFavDialog 
+          open={this.state.renameFav}
+          toggleDialog={this.toggleDialog('renameFav')}
+          fromFav={this.fromFav}
+          renameFavorite={this.renameFavorite}
         />
       </div>
     );

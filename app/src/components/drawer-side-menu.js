@@ -11,10 +11,9 @@ import AddIcon from '@material-ui/icons/AddCircle';
 import DeleteIcon from '@material-ui/icons/DeleteForever';
 import RenameIcon from '@material-ui/icons/Spellcheck';
 import MenuIcon from '@material-ui/icons/Menu';
-import MuiTreeView from 'material-ui-treeview';
 import Request from 'request';
+import TreeMenu from './tree-menu';
 import NewFileDialog from './newFile-dialog';
-import DeleteFileDialog from './deleteFile-dialog';
 import RenameFileDialog from './renameFile-dialog';
 
 const styles = {
@@ -30,12 +29,12 @@ class SwipeableTemporaryDrawer extends React.Component {
   constructor(props) {
     super(props);
     this.default_filename = this.props.filename;
+    this.filename = "";
 
     this.state = {
       left: false,
       folderList: [],
       newFile: false,
-      deleteFile: false,
       renameFile: false,
     };
   }
@@ -92,31 +91,17 @@ class SwipeableTemporaryDrawer extends React.Component {
       title: path,
     })
   };
-
-  deleteHistory = () => {
-    Request.post({
+  
+  renameHistory = (toPath) => { //toPathがnullのときは削除
+    Request.post(toPath==null ? {
       url: 'http://localhost/api/history/delete',
       json: {
-        path: this.props.filename,
+        path: this.filename,
       },
-    }, (err, res, body) => {
-      var data = body;
-      
-      if (err) {
-        console.log('Request error: '+ err.message);
-        return;
-      }
-
-      console.log(data);
-      this.loadHistory(this.default_filename,null);
-    }); 
-  }
-
-  renameHistory = (toPath) => {
-    Request.post({
+    } : {
       url: 'http://localhost/api/history/rename',
       json: {
-        fromPath: this.props.filename,
+        fromPath: this.filename,
         toPath: toPath,
       },
     }, (err, res, body) => {
@@ -127,8 +112,7 @@ class SwipeableTemporaryDrawer extends React.Component {
         return;
       }
 
-      console.log(data);
-      this.loadHistory(toPath,null);
+      this.toggleDrawer('left', true)();
     }); 
   }
 
@@ -154,33 +138,19 @@ class SwipeableTemporaryDrawer extends React.Component {
             </ListItemIcon>
             <ListItemText primary="New" />
           </ListItem>
-          <ListItem button
-            onClick={() => {
-              this.toggleDrawer('left', false)();
-              this.toggleDialog('deleteFile')(true)()}}
-          >
-            <ListItemIcon>
-              <DeleteIcon />
-            </ListItemIcon>
-            <ListItemText primary="Delete" />
-          </ListItem>
-          <ListItem button
-            onClick={() => {
-              this.toggleDrawer('left', false)();
-              this.toggleDialog('renameFile')(true)()}}
-          >
-            <ListItemIcon>
-              <RenameIcon />
-            </ListItemIcon>
-            <ListItemText primary="Rename" />
-          </ListItem>
         </List>
         <Divider />
-        <MuiTreeView
-          tree={this.state.folderList}
+        <TreeMenu 
+          menuList={this.state.folderList}
           onLeafClick={(node, parent) => {
-            this.toggleDrawer('left', false)();
-            this.loadHistory(node.replace(/^# /g,''), parent);}} //表示上の#を消す
+            this.loadHistory(node.value.replace(/^# /g,''), parent);
+            this.toggleDrawer('left', false)();}} //表示上の#を消す
+          onIconLeafClick={(node, parent) => {
+            this.filename=(parent==null ? node.value.replace(/^# /g,'') : parent.path+"/"+node.value.replace(/^# /g,''))
+            this.toggleDialog('renameFile')(true)();}}
+          onIconRootClick={(node, parent) => {
+            this.filename=(parent==null ? node.value.replace(/^# /g,'') : parent.path+"/"+node.value.replace(/^# /g,''))
+            this.toggleDialog('renameFile')(true)();}}
         />
       </div>
     );
@@ -207,15 +177,10 @@ class SwipeableTemporaryDrawer extends React.Component {
           toggleDialog={this.toggleDialog('newFile')}
           makeFile={(filename, parent) =>{this.loadHistory(filename, {path: parent})}}
         />
-        <DeleteFileDialog 
-          open={this.state.deleteFile}
-          toggleDialog={this.toggleDialog('deleteFile')}
-          deleteFile={this.deleteHistory}
-        />
         <RenameFileDialog 
           open={this.state.renameFile}
           toggleDialog={this.toggleDialog('renameFile')}
-          filepath={this.props.filename}
+          filepath={this.filename}
           renamePath={this.renameHistory}
         />
       </div>

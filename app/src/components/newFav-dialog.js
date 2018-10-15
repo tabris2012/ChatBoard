@@ -7,19 +7,20 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogActions from '@material-ui/core/DialogActions';
  
-export default class RenameFileDialog extends React.Component {
-  inputText="";
+export default class NewFavDialog extends React.Component {
+  inputText = {
+    group: "",
+    value: "",
+    url: "",
+  }
 
-  changeInputText = (event) => {
-    this.inputText = event.target.value;
+  changeInputText = (target) => (event) => {
+    this.inputText[target] = event.target.value;
   };
 
-  onClickRename = () => {
-    this.props.renamePath(this.inputText);
-  };
-
-  onClickDelete = () => {
-    this.props.renamePath(null);
+  onClickSave = () => {
+    this.props.addFavorite(this.inputText.group,
+      this.inputText.value, this.inputText.url);
   };
  
   render() {
@@ -29,19 +30,34 @@ export default class RenameFileDialog extends React.Component {
         onClose={this.props.toggleDialog(false)}
         aria-labelledby="dialog-title"
       >
-        <DialogTitle id="dialog-title">{"Rename Channel"}</DialogTitle>
+        <DialogTitle id="dialog-title">{"New Favorite"}</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Rename this Channel name:
+            Enter new Favorite info:
           </DialogContentText>
           <TextField 
             autoFocus
             margin="dense"
-            id="name"
-            label="#"
-            defaultValue={this.props.filepath}
+            id="group"
+            label="Group"
             fullWidth
-            onChange={this.changeInputText}
+            onChange={this.changeInputText('group')}
+          />
+          <TextField 
+            required
+            margin="dense"
+            id="name"
+            label="Name"
+            fullWidth
+            onChange={this.changeInputText('value')}
+          />
+          <TextField 
+            required
+            margin="dense"
+            id="url"
+            label="URL"
+            fullWidth
+            onChange={this.changeInputText('url')}
           />
         </DialogContent>
         <DialogActions>
@@ -50,17 +66,10 @@ export default class RenameFileDialog extends React.Component {
           </Button>
           <Button
             onClick={() => {
-              this.onClickRename();
+              this.onClickSave();
               this.props.toggleDialog(false)();}}
             color="primary" autoFocus>
-            Rename
-          </Button>
-          <Button
-            onClick={() => {
-              this.onClickDelete();
-              this.props.toggleDialog(false)();}}
-            color="secondary">
-            Delete
+            Save
           </Button>
         </DialogActions>
       </Dialog>
