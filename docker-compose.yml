@@ -2,12 +2,13 @@ version: '3'
 services:
   webserver:
     build: . # Dockerfileがあるディレクトリ
-    container_name: node
+    container_name: nodeChat
     tty: true
     privileged: true # root権限
     volumes:
       - ./app:/app
       - ../../../Data/:/data
     ports:
+      - "8030:8030"
       - "3000:3000"
-    command: /bin/sh -c "cd /app && npm install && npm start"
+    #command: /bin/sh -c "cd /app && npm install && npm start"
