@@ -8,13 +8,11 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import AddIcon from '@material-ui/icons/AddCircle';
-import DeleteIcon from '@material-ui/icons/DeleteForever';
-import RenameIcon from '@material-ui/icons/Spellcheck';
 import MenuIcon from '@material-ui/icons/Menu';
-import Request from 'request';
 import TreeMenu from './tree-menu';
 import NewFileDialog from './newFile-dialog';
 import RenameFileDialog from './renameFile-dialog';
+import {requestAPI} from './api-call';
 
 const styles = {
   list: {
@@ -62,7 +60,7 @@ class SwipeableTemporaryDrawer extends React.Component {
         [side]: open,
       });
     } else {//サイドメニューを開くときにフォルダ取得
-      Request.post('http://localhost/api/folder', (err, res, body) => {
+      requestAPI({path: '/api/folder'}, (err, res, body) => {
         var data = JSON.parse(body);
         this.addHeader(data);
         
@@ -93,13 +91,13 @@ class SwipeableTemporaryDrawer extends React.Component {
   };
   
   renameHistory = (toPath) => { //toPathがnullのときは削除
-    Request.post(toPath==null ? {
-      url: 'http://localhost/api/history/delete',
+    requestAPI(toPath==null ? {
+      path: '/api/history/delete',
       json: {
         path: this.filename,
       },
     } : {
-      url: 'http://localhost/api/history/rename',
+      path: '/api/history/rename',
       json: {
         fromPath: this.filename,
         toPath: toPath,

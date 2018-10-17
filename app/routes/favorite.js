@@ -27,7 +27,7 @@ router.post('/', function(req, res, next) {
   fs.readFile(root_file, 'utf-8', function (err,data) {
     if (err) { //ファイルが存在しなければ新規作成
       fs.writeFile(root_file,"");
-      res.status(200).json("[]");
+      res.status(200).json([]);
       return;
     }
 

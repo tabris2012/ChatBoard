@@ -29,7 +29,7 @@ export default class RenameFileDialog extends React.Component {
         onClose={this.props.toggleDialog(false)}
         aria-labelledby="dialog-title"
       >
-        <DialogTitle id="dialog-title">{"Rename Channel"}</DialogTitle>
+        <DialogTitle id="dialog-title">{"Rename/Delete Channel"}</DialogTitle>
         <DialogContent>
           <DialogContentText>
             Rename this Channel name:

@@ -5,17 +5,11 @@ import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/AddCircle';
-import DeleteIcon from '@material-ui/icons/DeleteForever';
 import FavIcon from '@material-ui/icons/Grade';
-import Collapse from '@material-ui/core/Collapse';
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
-import Request from 'request';
+import {requestAPI} from './api-call';
 import TreeMenu from './tree-menu';
 import NewFavDialog from './newFav-dialog';
 import RenameFavDialog from './renameFav-dialog';
@@ -54,7 +48,7 @@ class SwipeableTemporaryDrawer extends React.Component {
         [side]: open,
       });
     } else {//サイドメニューを開くときにお気に入り取得
-      Request.post('http://localhost/api/favorite', (err, res, body) => {
+      requestAPI({path: '/api/favorite'}, (err, res, body) => {
         var data = JSON.parse(body);
         
         if (err) {
@@ -100,8 +94,8 @@ class SwipeableTemporaryDrawer extends React.Component {
       }
     }
 
-    Request.post({
-      url: 'http://localhost/api/favorite/save',
+    requestAPI({
+      path: '/api/favorite/save',
       json: {
         data: this.state.favList,
       },
@@ -191,8 +185,8 @@ class SwipeableTemporaryDrawer extends React.Component {
       //最後まで見つからなかったら何もしない
     }
 
-    Request.post({
-      url: 'http://localhost/api/favorite/save',
+    requestAPI({
+      path: '/api/favorite/save',
       json: {
         data: this.state.favList,
       },

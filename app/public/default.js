@@ -1,4 +1,4 @@
-var current_filepath = "new_history";
+var current_filepath = "default";
 
 function sendText(input_name, display_id) {
   const obj_text = document.getElementsByName(input_name)[0];
@@ -27,7 +27,7 @@ function loadHistory(div_id, filepath) {
   $.ajax({
     async: true,
     type: "POST",
-    url: "./api/history/load",
+    url: "http://"+location.hostname+":8030/api/history/load",
     data: {
       path: filepath,
     },
@@ -50,7 +50,7 @@ function saveHistory(div_id, to_div_id) {
   $.ajax({
     async: true,
     type: "POST",
-    url: "./api/history",
+    url: "http://"+location.hostname+":8030/api/history",
     data: {
       data: text,
       path: current_filepath,

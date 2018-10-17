@@ -14,6 +14,13 @@ app.use(cookieParser());
 // view as static html
 app.use(express.static(__dirname + '/build'));
 
+// Allow access from other hosts
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+})
+
 // Server side
 var historyRouter = require('./routes/history');
 app.use('/api/history', historyRouter);
@@ -39,7 +46,7 @@ app.use(function(err, req, res, next) {
 });
 
 // Start server
-var port = '80';
+var port = '8030';
 
 app.listen(port, '0.0.0.0', () => {
   console.log("App server starting");
