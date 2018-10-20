@@ -65,7 +65,7 @@ class SwipeableTemporaryDrawer extends React.Component {
   };
 
   addFavorite = (groupName,valueName,url_path) => {
-    if (groupName == "") { //groupName無しの時は第1層に追加
+    if (groupName === "") { //groupName無しの時は第1層に追加
       this.state.favList.push({
         value: valueName,
         url: url_path,
@@ -122,18 +122,18 @@ class SwipeableTemporaryDrawer extends React.Component {
     }
 
     targetLayer.forEach((oneGroup) => {
-      if ((oneGroup.nodes == null) && (oneGroup.value == node)) {
+      if ((oneGroup.nodes === null) && (oneGroup.value == node)) {
         window.open(oneGroup.url);
       }
     });
   }
 
   renameFavorite = (toFav) => { //toFavがnullのときは削除
-    if (this.fromFav.group == "") { //groupName無しの時は第1層探索
-      var targetPos = 0;
+    var targetPos = 0;
 
+    if (this.fromFav.group === "") { //groupName無しの時は第1層探索
       this.state.favList.some((oneNode) => {
-        if ((oneNode.nodes == null) && (oneNode.value == this.fromFav.value)) {
+        if ((oneNode.nodes === null) && (oneNode.value == this.fromFav.value)) {
           if (toFav == null) {
             this.state.favList.splice(targetPos,1);
           } else { //変数
@@ -145,11 +145,11 @@ class SwipeableTemporaryDrawer extends React.Component {
 
         targetPos += 1;
       });
-    } else if (this.fromFav.value == "") { //valueが無いときgroupを編集
-      var targetPos = 0;
+    } else if (this.fromFav.value === "") { //valueが無いときgroupを編集
+      targetPos = 0;
 
       this.state.favList.some((oneGroup) => {
-        if ((oneGroup.nodes != null) && (oneGroup.value == this.fromFav.group)) {
+        if ((oneGroup.nodes != null) && (oneGroup.value === this.fromFav.group)) {
           if (toFav == null) {
             this.state.favList.splice(targetPos,1);
           } else { //変数
@@ -162,11 +162,11 @@ class SwipeableTemporaryDrawer extends React.Component {
       });
     } else {
       this.state.favList.some((oneGroup) => {
-        if ((oneGroup.nodes != null) && (oneGroup.value == this.fromFav.group)) {
-          var targetPos = 0;
+        if ((oneGroup.nodes != null) && (oneGroup.value === this.fromFav.group)) {
+          targetPos = 0;
 
           oneGroup.nodes.some((oneNode) => {
-            if ((oneNode.nodes == null) && (oneNode.value == this.fromFav.value)) {
+            if ((oneNode.nodes === null) && (oneNode.value == this.fromFav.value)) {
               if (toFav == null) {
                 oneGroup.nodes.splice(targetPos,1);
               } else { //変数

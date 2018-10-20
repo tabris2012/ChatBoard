@@ -49,8 +49,8 @@ class TreeMenu extends React.Component {
       if (node.nodes == null) { //Leafnode
         parentList.push(
           <ListItem button
-            className={parentPath=="" ? "" : classes.nested}
-            onClick={() => this.props.onLeafClick(node)}>
+            className={parentPath==="" ? "" : classes.nested}
+            onClick={() => this.props.onLeafClick(node, parent)}>
             <ListItemText primary={node.value} />
             <ListItemSecondaryAction>
               <IconButton aria-label="Delete">

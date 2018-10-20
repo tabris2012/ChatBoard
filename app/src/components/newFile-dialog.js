@@ -19,7 +19,7 @@ export default class NewFileDialog extends React.Component {
     var dirname = path.dirname(this.inputText);
     const basename = path.basename(this.inputText);
 
-    if (dirname == './') { //カレントディレクトリの表示は消す
+    if (dirname === './') { //カレントディレクトリの表示は消す
       dirname = '';
     }
     
